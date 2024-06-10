@@ -1,0 +1,44 @@
+La 4ta iteración de "Tus Libros" cuenta de dos partes:
+
+1) Hacer pasar los tests de TusLibros y deducir el patron de diseño a partir de ver el comportamiento que se repite.
+
+Como verán, los tests que fallan son porque las consultas tardan más de lo esperado.
+Si se fijan el motivo, se debe a sleeps incluidos a propósito para "simular" el tiempo de una consulta sofisticada real. Obviamente no pueden sacarlos ni modificarlos!
+
+En particular, las consultas que fallan son dos consultas nuevas que tienen que ver con obtener la cantidad vendida de un libro (o de todo el store) o la cantidad total recaudada de un libro (o de todo el store).
+
+Por lo tanto la solución que hace pasar los tests va a requerir ejecutar consultas en paralelo. Una vez que logren pasar los tests usando esa idea, busquen el código repetido, sáquenlo y ahí aparecerá el patrón buscado.
+
+Respecto a correr algo en paralelo, aquí el código de ejemplo para Smalltalk:
+
+Smalltalk:
+[ ... ] fork <-- crea un proceso nuevo que ejecuta en paralelo el bloque.
+Para esperar por algo que esta corriendo en paralelo tienen que usar un semáforo. Para ello tienen:
+
+readySemaphore := Semaphore new.  <-- crea el semáforo.
+readySemaphore signal. <--- indica que el semáforo se prendió.
+readySemaphore wait.  <--- espero por que el semaforo se prenda.
+
+2) Se construyó una GUI prototipo de pruebas para efectuar algunas de las consultas REST de TusLibros (crear carrito, agregar un elemento y listar el contenido del mismo) a partir de una interfaz gráfica. Siguiendo una arquitectura cliente-servidor, la interfaz gráfica hace de cliente y sirve para consumir los servicios provistos para la interfaz REST (cara externa) del servidor. 
+
+Tanto el prototipo de cliente, como la interfaz REST del servidor hacen uso de las clases WebClient y WebServer del paquete WebCliente.pck.st (incluído en el repo de la materia), para redireccionar los pedidos del exterior a los mensajes que sabe responder la solución de la iteración 3. 
+
+Recuerden que deben instalar el paquete en su imagen de CuisU para que funcione haciendo drag & drop como de costumbre. 
+
+Una vez instalado el paquete e importado todos los .st de la iteración 4, deberían poder abrir un workspace y evaluar:
+
+TusLibrosServerRestInterface installForDefaultSystem <--- Levanta un servidor REST para escuchar pedidos.
+
+WebServer reset <--- Desactiva al servidor REST.
+
+TusLibrosClientTestWindow open <--- Abre la interfaz gráfica de pruebas.
+
+Al utilizar el cliente comprobarán que cada vez que se realiza un pedido, se traba la interfaz gráfica de todo CuisU (el puntero queda en un reloj de arena hasta que la consulta termine).  Esto es porque los pedidos al servidor se hacen de forma sincrónica y nuevamente se pusieron delays artificiales en los pedidos para que se simulen tiempos de una conexión mala remota real.
+
+Lo que se pide entonces en la 2da parte del ejercicio es: "Diseñar" una abstracción de comunicación asincrónica declarativa entre cliente y servidor utilizando paralelismo, y que sirva para que TusLibros Client pueda comunicarse con su servidor asincrónicamente.
+
+Adicionalmente se nos solicita que los errores que puedan llegar del servidor sean mostrados a través de un mensaje popup (como el que aparece cuando se agregan libros al carrito de forma exitosa) en vez de que se levante el debugger como ocurre actualmente. Por el momento no hay problema en que los mensajes que llegan en formato html se vean con todos sus tags en la ventana.
+
+Como en otros ejercicios de este estilo la idea es mirar los patrones de colaboración repetidos de lo que se escribió, y al quitarlos, reificar la nueva abstracción que sirva para resolver estos 3 pedidos (e incluso futuros) de forma asincrónica.
+
+Tener especial cuidado de mantener la separación entre vista y modelo que posee la interfaz gráfica provista.
