@@ -20,6 +20,12 @@ add: newObject
 	
 	^newObject! !
 
+
+!PersistentSet methodsFor: 'private' stamp: 'HAW 6/18/2024 10:24:25'!
+species
+
+	^Set ! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'PersistentSet class' category: #CustomerImporter!
@@ -36,6 +42,7 @@ on: aSession from: aNonPersistentSet
 
 	^self new initializeOn: aSession from: aNonPersistentSet
 ! !
+
 
 
 !classDefinition: #ImportTest category: #CustomerImporter!
@@ -186,7 +193,7 @@ initialize
 Customer class
 	instanceVariableNames: ''!
 
-!Customer class methodsFor: 'importing' stamp: 'NR 6/22/2023 15:24:06'!
+!Customer class methodsFor: 'importing' stamp: 'HAW 6/18/2024 10:25:27'!
 importCustomers
 
 	"
