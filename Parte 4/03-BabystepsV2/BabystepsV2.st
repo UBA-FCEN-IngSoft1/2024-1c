@@ -10568,6 +10568,11 @@ hasConfirmationWarning
 
 	^ confirmationWarningMessage ~= ''! !
 
+!TDDBabyStepsGameCodedMessage methodsFor: 'evaluating' stamp: 'NR 6/28/2024 08:28:21'!
+hasPrematureDecisions
+
+	^ codes includes: self class codeForCantAdvancePrematureDecisionsMade! !
+
 !TDDBabyStepsGameCodedMessage methodsFor: 'evaluating' stamp: 'NR 5/1/2024 07:52:36'!
 ifNotEmpty: aBlock
 
@@ -12008,7 +12013,7 @@ informStart
 	
 ! !
 
-!TDDBabyStepsGameViewModel methodsFor: 'private' stamp: 'NR 6/21/2024 21:55:04'!
+!TDDBabyStepsGameViewModel methodsFor: 'private' stamp: 'NR 6/28/2024 08:28:00'!
 informStepResult
 	
 	| stepResultCodedMessage |
@@ -12020,7 +12025,10 @@ informStepResult
 				self notifyGameJourneyObservers: stepResultCodedMessage withSolutionSourceCode: model userSolutionSourceCodeRetriever.
 				model gameHasEnded ifTrue: [self notifyGameEndingObserversGameReallyFinished ]
 		]
-		ifFalse: [		self notifyGameJourneyObservers: stepResultCodedMessage withSolutionSourceCode: ''.
+		ifFalse: [		| solutionSourceCode |
+				solutionSourceCode := ''.
+				stepResultCodedMessage hasPrematureDecisions ifTrue: [ solutionSourceCode := model userSolutionSourceCodeRetriever ].
+				self notifyGameJourneyObservers: stepResultCodedMessage withSolutionSourceCode: solutionSourceCode.
 				stepResultCodedMessage hasConfirmationWarning ifTrue: [ self requestConfirmationOnWarning: stepResultCodedMessage ] 
 		].
 	! !
