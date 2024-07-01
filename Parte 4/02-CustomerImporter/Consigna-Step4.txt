@@ -1,6 +1,6 @@
 Nuestros queridos vendedores no dejan de darnos trabajo :-)
 Se vendió el sistema para que pueda administrar Proveedores también (Supplier).
-El supplier debe conocer un nombre, tipo y nro de identificación (como un Customer), tener direcciones (también como un Supplier) y además conoce Customers a los cuales provee.
+El supplier debe conocer un nombre, tipo y nro de identificación (como un Customer), tener direcciones (también como un Customer) y además conoce Customers a los cuales provee.
 Se debe poder importar información de Suppliers desde un archivo CSV como del ejemplo a continuación:
  
 S,Supplier1,D,123					<--- Registro de Supplier
